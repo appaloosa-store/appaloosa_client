@@ -92,14 +92,14 @@ public class Main {
 		w.write("Use -t instead of --token.\n");
 		w.write("Deploy several file in one command.\n\n");
 
-		w.write("> java -jar appaloosa-client-1.0.1 --token <store_token> /file/to/deploy\n");
-		w.write("> java -jar appaloosa-client-1.0.1 -t <store_token> /file/to/deploy\n");
-		w.write("> java -jar appaloosa-client-1.0.1 -t <store_token> /file/to/deploy /another/file/to/deploy\n\n");
+		w.write("> java -jar appaloosa-client-1.1.0-shaded --token <store_token> /file/to/deploy\n");
+		w.write("> java -jar appaloosa-client-1.1.0-shaded -t <store_token> /file/to/deploy\n");
+		w.write("> java -jar appaloosa-client-1.1.0-shaded -t <store_token> /file/to/deploy /another/file/to/deploy\n\n");
 
 		w.write("Exemples:\n");
-		w.write("> java -jar appaloosa-client-1.0.1 --token er355fgfvc23 /tmp/my_app.apk\n");
-		w.write("> java -jar appaloosa-client-1.0.1 -t er355fgfvc23 /tmp/my_app.ipa\n");
-		w.write("> java -jar appaloosa-client-1.0.1 -t er355fgfvc23 /tmp/my_app.ipa /tmp/my_app.apk\n\n");
+		w.write("> java -jar appaloosa-client-1.1.0-shaded --token er355fgfvc23 /tmp/my_app.apk\n");
+		w.write("> java -jar appaloosa-client-1.1.0-shaded -t er355fgfvc23 /tmp/my_app.ipa\n");
+		w.write("> java -jar appaloosa-client-1.1.0-shaded -t er355fgfvc23 /tmp/my_app.ipa /tmp/my_app.apk\n\n");
 
 		w.flush();
 
