@@ -127,7 +127,7 @@ public class AppaloosaClientTest {
 
 		server.verify();
 		assertEquals("eyJleH=", uploadForm.getPolicy());
-		assertEquals(200, uploadForm.getSuccessActionStatus());
+		assertTrue(200 == uploadForm.getSuccessActionStatus());
 		assertEquals("", uploadForm.getContentType());
 		assertEquals("LL/ZXXNCl+0NtI8=", uploadForm.getSignature());
 		assertEquals(BASE_URL + ":" + PORT + "/", uploadForm.getUrl());
@@ -182,7 +182,7 @@ public class AppaloosaClientTest {
 		MobileApplicationUpdate update = appaloosaClient
 				.notifyAppaloosaForFile(getTestFile("fake.ipa"), uploadForm);
 
-		assertEquals(590, update.id);
+		assertTrue(590 == update.id);
 
 		server.verify();
 	}
@@ -245,7 +245,7 @@ public class AppaloosaClientTest {
 
 		MobileApplicationUpdate update = appaloosaClient
 				.getMobileApplicationUpdateDetails(345);
-		assertEquals(6, update.status);
+		assertTrue(6 == update.status);
 		assertEquals("test message", update.statusMessage);
 	}
 
