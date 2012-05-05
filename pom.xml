@@ -81,9 +81,9 @@
 	</distributionManagement>
 
 	<scm>
-		<connection>scm:git:ssh://github.com/joel1di1/appaloosa-clien.git</connection>
-		<developerConnection>scm:git:ssh://git@github.com/joel1di1/appaloosa-clien.git</developerConnection>
-		<url>https://github.com/joel1di1/appaloosa-clien</url>
+		<connection>scm:git:ssh://github.com/joel1di1/appaloosa-client.git</connection>
+		<developerConnection>scm:git:ssh://git@github.com/joel1di1/appaloosa-client.git</developerConnection>
+		<url>https://github.com/joel1di1/appaloosa-client</url>
 	</scm>
 
 	<dependencies>
