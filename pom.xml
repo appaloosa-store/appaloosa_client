@@ -70,11 +70,11 @@
 	</build>
 	<distributionManagement>
 		<repository>
-			<id>releases</id>
+			<id>joel1di1-mvn-repo-releases</id>
 			<url>https://joel1di1@github.com/joel1di1/joel1di1-mvn-repo/raw/master/releases</url>
 		</repository>
 		<snapshotRepository>
-			<id>snapshots</id>
+			<id>joel1di1-mvn-repo-releases-snapshots</id>
 			<url>https://joel1di1@github.com/joel1di1/joel1di1-mvn-repo/raw/master/snapshots</url>
 		</snapshotRepository>
 	</distributionManagement>
