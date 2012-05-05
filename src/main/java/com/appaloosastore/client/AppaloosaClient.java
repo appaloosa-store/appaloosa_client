@@ -73,7 +73,7 @@ public class AppaloosaClient {
 	
 	private String organisationToken;
 
-	private PrintStream logger = System.out;
+	private PrintStream logger;
 	private HttpClient httpClient;
 	private String appaloosaUrl = "http://www.appaloosa-store.com";
 	private int appaloosaPort = 80;
@@ -85,11 +85,12 @@ public class AppaloosaClient {
 
 	public AppaloosaClient() {
 		resetHttpConnection();		
+		logger = System.out;
 	}
 	
 	public AppaloosaClient(String organisationToken) {
 		this();
-		this.organisationToken = StringUtils.trimToNull(organisationToken);
+		setOrganisationToken(organisationToken);
 	}
 
 	public AppaloosaClient(String organisationToken, String proxyHost,
@@ -109,18 +110,18 @@ public class AppaloosaClient {
 	 *             when something went wrong
 	 * */
 	public void deployFile(String filePath) throws AppaloosaDeployException {
-		logger.println("== Deploy file " + filePath + " to Appaloosa");
+		log("== Deploy file " + filePath + " to Appaloosa");
 
 		// Retrieve details from Appaloosa to do the upload
-		logger.println("==   Ask for upload information");
+		log("==   Ask for upload information");
 		UploadBinaryForm uploadForm = getUploadForm();
 
 		// Upload the file on Amazon
-		logger.println("==   Upload file " + filePath);
+		log("==   Upload file " + filePath);
 		uploadFile(filePath, uploadForm);
 
 		// Notify Appaloosa that the file is available
-		logger.println("==   Start remote processing file");
+		log("==   Start remote processing file");
 		MobileApplicationUpdate update = notifyAppaloosaForFile(filePath,
 				uploadForm);
 
@@ -129,11 +130,11 @@ public class AppaloosaClient {
 
 		// publish update
 		if (update.hasError() == false) {
-			logger.println("==   Publish uploaded file");
+			log("==   Publish uploaded file");
 			publish(update);
-			logger.println("== File deployed and published successfully");
+			log("== File deployed and published successfully");
 		} else {
-			logger.println("== Impossible to publish file: "
+			log("== Impossible to publish file: "
 					+ update.statusMessage);
 			throw new AppaloosaDeployException(update.statusMessage);
 		}
@@ -144,7 +145,7 @@ public class AppaloosaClient {
 		int retries = 0;
 		while (!update.isProcessed() && retries < MAX_RETRIES) {
 			smallWait();
-			logger.println("==  Check that appaloosa has processed the uploaded file (extract useful information and do some verifications)");
+			log("==  Check that appaloosa has processed the uploaded file (extract useful information and do some verifications)");
 			try{
 				update = getMobileApplicationUpdateDetails(update.id);
 				retries = 0;
@@ -156,6 +157,11 @@ public class AppaloosaClient {
 			throw new AppaloosaDeployException("Appaloosa servers seems to be down. Please retry later. Sorry for breaking your build...");
 		}
 		return update;
+	}
+
+	private void log(String string) {
+		if (logger != null)
+			logger.println(string);
 	}
 
 	protected MobileApplicationUpdate publish(MobileApplicationUpdate update)
@@ -346,9 +352,17 @@ public class AppaloosaClient {
 		HttpGet httpGet = new HttpGet(newBinaryUrl());
 		try {
 			HttpResponse response = httpClient.execute(httpGet);
-			String json = IOUtils.toString(response.getEntity().getContent());
-			UploadBinaryForm uploadForm = UploadBinaryForm.createFormJson(json);
-			return uploadForm;
+			int statusCode = response.getStatusLine().getStatusCode();
+			switch (statusCode) {
+			case 422:
+				throw createExceptionWithAppaloosaErrorResponse(response, "");
+			default:
+				String json = IOUtils.toString(response.getEntity().getContent());
+				UploadBinaryForm uploadForm = UploadBinaryForm.createFormJson(json);
+				return uploadForm;
+			}
+		} catch (AppaloosaDeployException e) {
+			throw e;
 		} catch (Exception e) {
 			throw new AppaloosaDeployException(
 					"impossible to retrieve upload information from "
@@ -428,7 +442,7 @@ public class AppaloosaClient {
 	}
 	
 	void setOrganisationToken(String organisationToken) {
-		this.organisationToken = organisationToken;
+		this.organisationToken = StringUtils.trimToNull(organisationToken);
 	}
 
 	public void setProxyHost(String proxyHost) {

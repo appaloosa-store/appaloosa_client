@@ -80,7 +80,7 @@ public class AppaloosaClientTest {
 	
 	@Test
 	public void appaloosaClientShouldTrimToken() throws AppaloosaDeployException{
-		appaloosaClient = new AppaloosaClient("   " + ORGANISATION_TOKEN + "  \t  ");
+		appaloosaClient.setOrganisationToken("   "+ORGANISATION_TOKEN+" \t ");
 
 		String url = "/api/upload_binary_form.json?token=" + ORGANISATION_TOKEN;
 		server.expect(GET, url)
@@ -136,6 +136,19 @@ public class AppaloosaClientTest {
 		assertEquals("private", uploadForm.getAcl());
 	}
 
+	@Test(expected=AppaloosaDeployException.class)
+	public void getUploadFormShouldDisplayErrorFormServer()
+			throws AppaloosaDeployException {
+		String url = "/api/upload_binary_form.json?token=" + ORGANISATION_TOKEN;
+		server.expect(GET, url)
+				.respondWith(422, null, "{\"errors\":[\"invalid token\"]}");
+
+		appaloosaClient.getUploadForm();
+
+		server.verify();
+	}
+
+	
 	@Test
 	public void shouldHandleAmazonError() {
 		UploadBinaryForm uploadForm = createFakeUploadForm();
@@ -276,10 +289,10 @@ public class AppaloosaClientTest {
 
 		AppaloosaClient mockedAppaloosaClient = EasyMock
 				.createMockBuilder(AppaloosaClient.class)
-				.withConstructor(ORGANISATION_TOKEN)
 				.addMockedMethod("getMobileApplicationUpdateDetails",
 						Integer.class).addMockedMethod("smallWait")
 				.createMock();
+		mockedAppaloosaClient.setOrganisationToken(ORGANISATION_TOKEN);
 
 		MobileApplicationUpdate returnedUpdate = new MobileApplicationUpdate();
 		returnedUpdate.id = 1;
@@ -344,10 +357,10 @@ public class AppaloosaClientTest {
 
 		AppaloosaClient mockedAppaloosaClient = EasyMock
 				.createMockBuilder(AppaloosaClient.class)
-				.withConstructor(ORGANISATION_TOKEN)
 				.addMockedMethod("getMobileApplicationUpdateDetails",
 						Integer.class).addMockedMethod("smallWait")
 				.createMock();
+		mockedAppaloosaClient.setOrganisationToken(ORGANISATION_TOKEN);
 
 		MobileApplicationUpdate returnedUpdate = new MobileApplicationUpdate();
 		returnedUpdate.id = 1;
