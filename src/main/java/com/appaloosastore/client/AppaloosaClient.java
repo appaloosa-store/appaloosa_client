@@ -71,7 +71,8 @@ public class AppaloosaClient {
 	
 	public static int MAX_RETRIES = 30; 
 	
-	private final String organisationToken;
+	private String organisationToken;
+
 	private PrintStream logger = System.out;
 	private HttpClient httpClient;
 	private String appaloosaUrl = "http://www.appaloosa-store.com";
@@ -80,12 +81,15 @@ public class AppaloosaClient {
 	private String proxyHost;
 	private String proxyUser;
 	private String proxyPass;
-	private int proxyPort;
+	private int    proxyPort;
 
+	public AppaloosaClient() {
+		resetHttpConnection();		
+	}
+	
 	public AppaloosaClient(String organisationToken) {
+		this();
 		this.organisationToken = StringUtils.trimToNull(organisationToken);
-
-		resetHttpConnection();
 	}
 
 	public AppaloosaClient(String organisationToken, String proxyHost,
@@ -422,4 +426,25 @@ public class AppaloosaClient {
 	protected void setWaitDuration(int waitDuration) {
 		this.waitDuration = waitDuration;
 	}
+	
+	void setOrganisationToken(String organisationToken) {
+		this.organisationToken = organisationToken;
+	}
+
+	public void setProxyHost(String proxyHost) {
+		this.proxyHost = proxyHost;
+	}
+
+	public void setProxyUser(String proxyUser) {
+		this.proxyUser = proxyUser;
+	}
+
+	public void setProxyPass(String proxyPass) {
+		this.proxyPass = proxyPass;
+	}
+
+	public void setProxyPort(int proxyPort) {
+		this.proxyPort = proxyPort;
+	}
+
 }
