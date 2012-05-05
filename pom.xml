@@ -8,7 +8,28 @@
 	<packaging>jar</packaging>
 
 	<name>appaloosa-client</name>
-	<url>http://maven.apache.org</url>
+	<description>Publish your mobile applications (Android, iOS, ...) to the &lt;a href="http://www.appaloosa-store.com"&gt;appaloosa-store&lt;/a&gt; platform.</description>
+
+	<url></url>
+	<licenses>
+		<license>
+			<name>MIT</name>
+			<url>LICENSE.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+	<developers>
+		<developer>
+			<id>aheritier</id>
+			<name>Arnaud Heritier</name>
+			<email>aheritier@apache.org</email>
+		</developer>
+		<developer>
+			<id>joel1di1</id>
+			<name>Benoit Lafontaine</name>
+			<email>joel1di1@gmail.com</email>
+		</developer>
+	</developers>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -22,6 +43,19 @@
 			<url>https://github.com/joel1di1/joel1di1-mvn-repo/raw/master/releases/</url>
 		</repository>
 	</repositories>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>com.mycila.maven-license-plugin</groupId>
+				<artifactId>maven-license-plugin</artifactId>
+				<version>1.10.b1</version>
+				<configuration>
+					<header>src/etc/header.txt</header>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 
 	<dependencies>
 		<dependency>
