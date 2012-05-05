@@ -56,6 +56,11 @@
 			</plugin>
 		</plugins>
 	</build>
+	<scm>
+		<connection>scm:git:ssh://github.com/joel1di1/appaloosa-clien.git</connection>
+		<developerConnection>scm:git:ssh://git@github.com/joel1di1/appaloosa-clien.git</developerConnection>
+		<url>https://github.com/joel1di1/appaloosa-clien</url>
+	</scm>
 
 	<dependencies>
 		<dependency>
