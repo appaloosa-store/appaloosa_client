@@ -379,11 +379,12 @@ public class AppaloosaClient {
 
 		if (proxyHost != null && !proxyHost.isEmpty() && proxyPort > 0) {
 			Credentials cred = null;
-			if (proxyUser != null && !proxyUser.isEmpty())
+			if (proxyUser != null && !proxyUser.isEmpty()){
 				cred = new UsernamePasswordCredentials(proxyUser, proxyPass);
 
 			((DefaultHttpClient) httpClient).getCredentialsProvider()
 					.setCredentials(new AuthScope(proxyHost, proxyPort), cred);
+			}
 			HttpHost proxy = new HttpHost(proxyHost, proxyPort);
 			httpClient.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY,
 					proxy);
