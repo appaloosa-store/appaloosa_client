@@ -101,6 +101,7 @@ public class AppaloosaClient {
 		this.proxyUser = proxyUser;
 		this.proxyPass = proxyPass;
 		this.proxyPort = proxyPort;
+		resetHttpConnection();
 	}
 
 	/**
@@ -111,6 +112,8 @@ public class AppaloosaClient {
 	 * */
 	public void deployFile(String filePath) throws AppaloosaDeployException {
 		log("== Deploy file " + filePath + " to Appaloosa");
+		log("== reseting http connection");
+		resetHttpConnection();
 
 		// Retrieve details from Appaloosa to do the upload
 		log("==   Ask for upload information");
