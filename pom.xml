@@ -9,7 +9,7 @@
 	<name>appaloosa-client</name>
 	<description>Publish your mobile applications (Android, iOS, ...) to the &lt;a href="http://www.appaloosa-store.com"&gt;appaloosa-store&lt;/a&gt; platform.</description>
 
-	<url>https://github.com/joel1di1/appaloosa-client</url>
+	<url>https://github.com/octo-online/appaloosa-client</url>
 	<licenses>
 		<license>
 			<name>MIT</name>
