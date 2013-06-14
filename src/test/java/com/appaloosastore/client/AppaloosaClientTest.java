@@ -68,6 +68,7 @@ public class AppaloosaClientTest {
 		appaloosaClient.setBaseUrl(BASE_URL);
 		appaloosaClient.setPort(PORT);
 		appaloosaClient.setWaitDuration(10);
+		appaloosaClient.resetHttpConnection();
 
 		server = new MockHttpServer(PORT);
 		server.start();

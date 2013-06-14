@@ -83,8 +83,7 @@ public class AppaloosaClient {
 	private String proxyPass;
 	private int    proxyPort;
 
-	public AppaloosaClient() {
-		resetHttpConnection();		
+	public AppaloosaClient() {	
 		logger = System.out;
 	}
 	
@@ -101,7 +100,6 @@ public class AppaloosaClient {
 		this.proxyUser = proxyUser;
 		this.proxyPass = proxyPass;
 		this.proxyPort = proxyPort;
-		resetHttpConnection();
 	}
 
 	/**
@@ -375,7 +373,7 @@ public class AppaloosaClient {
 		}
 	}
 
-	private void resetHttpConnection() {
+	void resetHttpConnection() {
 		if (httpClient != null)
 			httpClient.getConnectionManager().shutdown();
 		httpClient = new DefaultHttpClient();
