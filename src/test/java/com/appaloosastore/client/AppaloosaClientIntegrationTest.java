@@ -33,17 +33,32 @@ public class AppaloosaClientIntegrationTest {
 	private static final String ORGANISATION_TOKEN = "my904ssw8zas50e3ja7jmk6f43trm4gu";
 	AppaloosaClient appaloosaClient;
 	
-	@Before
-	public void setup() throws Exception{
-		appaloosaClient = new AppaloosaClient(ORGANISATION_TOKEN);
+	private AppaloosaClient constructAppaloosaClient(String proxyHost, Integer proxyPort, String proxyUsername, String proxyPassword) {
+		AppaloosaClient appaloosaClient = new AppaloosaClient(ORGANISATION_TOKEN);
 		appaloosaClient.setBaseUrl("http://localhost");
 		appaloosaClient.setPort(3000);
+		return appaloosaClient;
+	}
+	private AppaloosaClient constructAppaloosaClient() {
+		return constructAppaloosaClient(null,  null,  null, null);
+	}
+
+	@Before
+	public void setup() throws Exception{
+		appaloosaClient = constructAppaloosaClient();
 	}
 	
 	@Test
 	@Ignore
 	public void deployFile() throws AppaloosaDeployException{
-		appaloosaClient.deployFile("/tmp/sample_1.ipa");
+		appaloosaClient.deployFile("/Users/joel1di1/Dropbox/MobileStore/IPA/ElCurator/ElCurator-1.3.ipa");
+	}
+
+	@Test
+	@Ignore
+	public void deployFileWithProxy() throws AppaloosaDeployException{
+		appaloosaClient = constructAppaloosaClient("localhost", 8888, null, null);
+		appaloosaClient.deployFile("/Users/joel1di1/Dropbox/MobileStore/IPA/ElCurator/ElCurator-1.3.ipa");
 	}
 
 }
