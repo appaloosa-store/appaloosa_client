@@ -24,6 +24,9 @@
  */
 package com.appaloosastore.client;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
@@ -40,6 +43,10 @@ public class MobileApplicationUpdate {
 	public String statusMessage;
 	@JsonProperty(value = "application_id")
 	public String applicationId;
+
+	public String description;
+
+	public List<String> groupNames = new ArrayList<String>();
 
 	public static MobileApplicationUpdate createFrom(String json)
 			throws AppaloosaDeployException {

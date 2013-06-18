@@ -26,19 +26,31 @@ package com.appaloosastore.client;
 
 import static com.harlap.test.http.MockHttpServer.Method.GET;
 import static com.harlap.test.http.MockHttpServer.Method.POST;
+import static org.easymock.EasyMock.anyObject;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.apache.http.NameValuePair;
 import org.apache.http.ParseException;
 import org.apache.http.ProtocolVersion;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.message.BasicHttpResponse;
+import org.apache.http.message.BasicNameValuePair;
 import org.easymock.EasyMock;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -78,10 +90,11 @@ public class AppaloosaClientTest {
 	public void tearDown() throws Exception {
 		server.stop();
 	}
-	
+
 	@Test
-	public void appaloosaClientShouldTrimToken() throws AppaloosaDeployException{
-		appaloosaClient.setOrganisationToken("   "+ORGANISATION_TOKEN+" \t ");
+	public void appaloosaClientShouldTrimToken()
+			throws AppaloosaDeployException {
+		appaloosaClient.setStoreToken("   " + ORGANISATION_TOKEN + " \t ");
 
 		String url = "/api/upload_binary_form.json?token=" + ORGANISATION_TOKEN;
 		server.expect(GET, url)
@@ -91,7 +104,7 @@ public class AppaloosaClientTest {
 	}
 
 	@Test
-	public void deployFileIntegrationTest() throws AppaloosaDeployException {
+	public void deployShouldUseDescription() throws AppaloosaDeployException {
 		server.expect(GET,
 				"/api/upload_binary_form.json?token=" + ORGANISATION_TOKEN)
 				.respondWith(200, null, sampleBinaryFormResponse);
@@ -117,6 +130,7 @@ public class AppaloosaClientTest {
 		server.verify();
 	}
 
+	
 	@Test
 	public void getUploadFormShouldCallAppaloosaAndReturnsObject()
 			throws AppaloosaDeployException {
@@ -137,19 +151,18 @@ public class AppaloosaClientTest {
 		assertEquals("private", uploadForm.getAcl());
 	}
 
-	@Test(expected=AppaloosaDeployException.class)
+	@Test(expected = AppaloosaDeployException.class)
 	public void getUploadFormShouldDisplayErrorFormServer()
 			throws AppaloosaDeployException {
 		String url = "/api/upload_binary_form.json?token=" + ORGANISATION_TOKEN;
-		server.expect(GET, url)
-				.respondWith(422, null, "{\"errors\":[\"invalid token\"]}");
+		server.expect(GET, url).respondWith(422, null,
+				"{\"errors\":[\"invalid token\"]}");
 
 		appaloosaClient.getUploadForm();
 
 		server.verify();
 	}
 
-	
 	@Test
 	public void shouldHandleAmazonError() {
 		UploadBinaryForm uploadForm = createFakeUploadForm();
@@ -293,7 +306,7 @@ public class AppaloosaClientTest {
 				.addMockedMethod("getMobileApplicationUpdateDetails",
 						Integer.class).addMockedMethod("smallWait")
 				.createMock();
-		mockedAppaloosaClient.setOrganisationToken(ORGANISATION_TOKEN);
+		mockedAppaloosaClient.setStoreToken(ORGANISATION_TOKEN);
 
 		MobileApplicationUpdate returnedUpdate = new MobileApplicationUpdate();
 		returnedUpdate.id = 1;
@@ -303,18 +316,18 @@ public class AppaloosaClientTest {
 		mockedAppaloosaClient.smallWait();
 		mockedAppaloosaClient.smallWait();
 		mockedAppaloosaClient.smallWait();
-		EasyMock.expect(
+		expect(
 				mockedAppaloosaClient.getMobileApplicationUpdateDetails(1))
 				.andThrow(new RuntimeException("error test")).times(2);
-		EasyMock.expect(
+		expect(
 				mockedAppaloosaClient.getMobileApplicationUpdateDetails(1))
 				.andReturn(returnedUpdate);
 
-		EasyMock.replay(mockedAppaloosaClient);
+		replay(mockedAppaloosaClient);
 
 		update = mockedAppaloosaClient.waitForAppaloosaToProcessFile(update);
 
-		EasyMock.verify(mockedAppaloosaClient);
+		verify(mockedAppaloosaClient);
 		assertTrue(update.isProcessed());
 	}
 
@@ -335,12 +348,12 @@ public class AppaloosaClientTest {
 			mockedAppaloosaClient.smallWait();
 		}
 
-		EasyMock.expect(
+		expect(
 				mockedAppaloosaClient.getMobileApplicationUpdateDetails(1))
 				.andThrow(new RuntimeException("error test"))
 				.times(AppaloosaClient.MAX_RETRIES);
 
-		EasyMock.replay(mockedAppaloosaClient);
+		replay(mockedAppaloosaClient);
 
 		try {
 			mockedAppaloosaClient.waitForAppaloosaToProcessFile(update);
@@ -361,7 +374,7 @@ public class AppaloosaClientTest {
 				.addMockedMethod("getMobileApplicationUpdateDetails",
 						Integer.class).addMockedMethod("smallWait")
 				.createMock();
-		mockedAppaloosaClient.setOrganisationToken(ORGANISATION_TOKEN);
+		mockedAppaloosaClient.setStoreToken(ORGANISATION_TOKEN);
 
 		MobileApplicationUpdate returnedUpdate = new MobileApplicationUpdate();
 		returnedUpdate.id = 1;
@@ -372,27 +385,128 @@ public class AppaloosaClientTest {
 			mockedAppaloosaClient.smallWait();
 		}
 
-		EasyMock.expect(
+		expect(
 				mockedAppaloosaClient.getMobileApplicationUpdateDetails(1))
 				.andThrow(new RuntimeException("error test"))
 				.times(AppaloosaClient.MAX_RETRIES - 1);
-		EasyMock.expect(
+		expect(
 				mockedAppaloosaClient.getMobileApplicationUpdateDetails(1))
 				.andReturn(update);
-		EasyMock.expect(
+		expect(
 				mockedAppaloosaClient.getMobileApplicationUpdateDetails(1))
 				.andThrow(new RuntimeException("error test"))
 				.times(AppaloosaClient.MAX_RETRIES - 1);
-		EasyMock.expect(
+		expect(
 				mockedAppaloosaClient.getMobileApplicationUpdateDetails(1))
 				.andReturn(returnedUpdate);
 
-		EasyMock.replay(mockedAppaloosaClient);
+		replay(mockedAppaloosaClient);
 
 		update = mockedAppaloosaClient.waitForAppaloosaToProcessFile(update);
 
-		EasyMock.verify(mockedAppaloosaClient);
+		verify(mockedAppaloosaClient);
 		assertTrue(update.isProcessed());
 	}
 
+	@Test
+	public void publishShouldCallConstructParametersFromUpdate()
+			throws AppaloosaDeployException, UnsupportedEncodingException, ClientProtocolException, IOException {
+		MobileApplicationUpdate update = new MobileApplicationUpdate();
+		update.id = 1;
+
+		server.expect(POST, "/api/publish_update.json")
+				.respondWith(200, null,
+						"{\"id\":1, \"status\":4,\"application_id\":\"com.appaloosa.sampleapp\"}");
+		
+		AppaloosaClient mockedAppaloosaClient = EasyMock
+				.createMockBuilder(AppaloosaClient.class)
+				.addMockedMethod("constructParametersFromUpdate",
+						MobileApplicationUpdate.class)
+				.addMockedMethod("makePublishCall",
+						HttpPost.class,
+						List.class)
+				.createMock();
+		
+		mockedAppaloosaClient.setStoreToken(ORGANISATION_TOKEN);
+		mockedAppaloosaClient.resetHttpConnection();
+
+		expect(mockedAppaloosaClient.constructParametersFromUpdate(update))
+				.andReturn(new ArrayList<NameValuePair>());
+		expect(
+				mockedAppaloosaClient.makePublishCall(
+						anyObject(HttpPost.class), anyObject(List.class)))
+				.andReturn(null);
+		replay(mockedAppaloosaClient);
+		
+		mockedAppaloosaClient.publish(update);
+		
+		verify(mockedAppaloosaClient);
+	}
+	
+	@Test
+	public void constructParametersFromUpdateShouldUseDescriptionIfSpecified()
+			throws AppaloosaDeployException, UnsupportedEncodingException, ClientProtocolException, IOException {
+		MobileApplicationUpdate update = new MobileApplicationUpdate();
+		update.id = 1;
+		
+		update.description = null;
+		List<NameValuePair> params = appaloosaClient.constructParametersFromUpdate(update);
+		assertEquals(2, params.size());
+
+		update.description = "";
+		params = appaloosaClient.constructParametersFromUpdate(update);
+		assertEquals(3, params.size());
+		assertTrue(params.contains(new BasicNameValuePair("mobile_application_update[description]", update.description)));
+	}	
+	
+	@Test
+	public void constructParametersFromUpdateShouldUseGroupsIfSpecified()
+			throws AppaloosaDeployException, UnsupportedEncodingException, ClientProtocolException, IOException {
+		MobileApplicationUpdate update = new MobileApplicationUpdate();
+		update.id = 1;
+		
+		update.groupNames = new ArrayList<String>();
+		List<NameValuePair> params = appaloosaClient.constructParametersFromUpdate(update);
+		assertEquals(2, params.size());
+
+		update.groupNames.add("1er group");
+		update.groupNames.add("2eme group");
+		params = appaloosaClient.constructParametersFromUpdate(update);
+		assertEquals(4, params.size());
+		for (String groupName : update.groupNames) {
+			assertTrue(params.contains(new BasicNameValuePair(
+					"mobile_application_update[group_names][]", groupName)));
+		}
+	}	
+	
+	@Test
+	public void setUpdateParametersShouldUpdateDescriptionAndGroupNames(){
+		MobileApplicationUpdate update = new MobileApplicationUpdate();
+		String description = "New Desc";
+		List<String> groupNames = new ArrayList<String>();
+		groupNames.add("Group1");
+		groupNames.add("Group2");
+		
+		appaloosaClient.setUpdateParameters(update, description, groupNames);
+		
+		assertEquals(description, update.description);
+		assertEquals(2, update.groupNames.size());
+		assertTrue(update.groupNames.contains("Group1"));
+		assertTrue(update.groupNames.contains("Group2"));
+	}
+	
+	@Test
+	public void parseGroupNames(){
+		assertParseGroupNames(new String[0], "");
+		assertParseGroupNames(new String[] { "Group1" }, "Group1");
+		assertParseGroupNames(new String[] { "Group with a long name" }, "Group with a long name");
+		assertParseGroupNames(new String[] { "Group 1", "Group 2", "Group 3" },
+				" \tGroup 1\t | Group 2 | Group 3");
+	}
+
+	private void assertParseGroupNames(String[] expected,
+			String groupNamesToParse) {
+		Assert.assertArrayEquals(expected,
+				appaloosaClient.parseGroupNames(groupNamesToParse).toArray());
+	}
 }

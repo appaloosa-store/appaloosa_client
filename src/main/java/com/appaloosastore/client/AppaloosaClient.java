@@ -31,6 +31,7 @@ import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpHost;
@@ -40,6 +41,7 @@ import org.apache.http.ParseException;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.Credentials;
 import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
@@ -56,14 +58,15 @@ import org.apache.http.util.EntityUtils;
 /**
  * Client for appaloosa, http://www.appaloosa-store.com. Usage : <br>
  * <code>
- * 	AppaloosaClient client = new AppaloosaClient("my_organisation_token"); <br>
- *  try {                                                                  <br>
- *    client.deployFile("/path/to/archive");                               <br>
- *    System.out.println("Archive deployed");                              <br>
- *  } catch (AppaloosaDeployException e) {                                 <br>
- *  	System.err.println("Something went wrong");                        <br>
- *  }                                                                      <br>
- * </code> Organisation token is available on settings page.
+ * 	AppaloosaClient client = new AppaloosaClient("my_store_token"); <br>
+ *  try {                                                              <br>
+ *    client.deployFile("/path/to/archive", "optional description",    <br>
+ *    					"some group | another group | also optional"); <br>
+ *    System.out.println("Archive deployed");                          <br>
+ *  } catch (AppaloosaDeployException e) {                             <br>
+ *  	System.err.println("Something went wrong");                    <br>
+ *  }                                                                  <br>
+ * </code> Store token is available on settings page.
  * 
  * @author Benoit Lafontaine
  */
@@ -71,7 +74,7 @@ public class AppaloosaClient {
 	
 	public static int MAX_RETRIES = 30; 
 	
-	private String organisationToken;
+	private String storeToken;
 
 	private PrintStream logger;
 	private HttpClient httpClient;
@@ -87,14 +90,14 @@ public class AppaloosaClient {
 		logger = System.out;
 	}
 	
-	public AppaloosaClient(String organisationToken) {
+	public AppaloosaClient(String storeToken) {
 		this();
-		setOrganisationToken(organisationToken);
+		setStoreToken(storeToken);
 	}
 
-	public AppaloosaClient(String organisationToken, String proxyHost,
+	public AppaloosaClient(String storeToken, String proxyHost,
 			int proxyPort, String proxyUser, String proxyPass) {
-		this(organisationToken);
+		this(storeToken);
 
 		this.proxyHost = proxyHost;
 		this.proxyUser = proxyUser;
@@ -103,12 +106,55 @@ public class AppaloosaClient {
 	}
 
 	/**
+	 * {@link #deployFile(String, String, List<String>) deployFile} with null description and null groupNames.
+	 * @param filePath
+	 * @throws AppaloosaDeployException
+	 * */
+	public void deployFile(String filePath) throws AppaloosaDeployException {
+		deployFile(filePath, null, (List<String>) null);
+	}
+		
+	/**
+	 * {@link #deployFile(String, String, List<String>) deployFile} with
+	 * groupNames as String.
+	 * 
+	 * @param filePath
+	 * @param description
+	 * @param groupNames
+	 *            List of group names in a string format, group names should be
+	 *            separated by '|'. Example: "Group 1 | Group 2"
+	 * @throws AppaloosaDeployException
+	 * */
+	public void deployFile(String filePath, String description,
+			String groupNames) throws AppaloosaDeployException {
+		deployFile(filePath, description, parseGroupNames(groupNames));
+	}
+
+	List<String> parseGroupNames(String groupNames) {
+		ArrayList<String> names = new ArrayList<String>();
+		if (groupNames != null) {
+			for (String groupName : groupNames.split("\\|")) {
+				String trimedGroupName = groupName.trim();
+				if (!trimedGroupName.isEmpty()) {
+					names.add(trimedGroupName);
+				}
+			}
+		}
+		return names;
+	}
+
+	/**
 	 * @param filePath
 	 *            physical path of the file to upload
+	 * @param description Text description for this update. Use null if you want to use the previous description.
+	 * @param groupNames List of group names that will be allowed to see and install this update. 
+	 * 			When null or empty, the update will be publish to previous allowed groups if a previous update exists, 
+	 * 			otherwise it will be published to default group "everybody".
+	 * 			You can also specify to publish your file to the default group "everybody", you have to use the name "everybody" even in French.   
 	 * @throws AppaloosaDeployException
 	 *             when something went wrong
 	 * */
-	public void deployFile(String filePath) throws AppaloosaDeployException {
+	public void deployFile(String filePath, String description, List<String> groupNames) throws AppaloosaDeployException {
 		log("== Deploy file " + filePath + " to Appaloosa");
 		log("== reseting http connection");
 		resetHttpConnection();
@@ -132,12 +178,21 @@ public class AppaloosaClient {
 		// publish update
 		if (update.hasError() == false) {
 			log("==   Publish uploaded file");
+			setUpdateParameters(update, description, groupNames);
 			publish(update);
 			log("== File deployed and published successfully");
 		} else {
 			log("== Impossible to publish file: "
 					+ update.statusMessage);
 			throw new AppaloosaDeployException(update.statusMessage);
+		}
+	}
+
+	void setUpdateParameters(MobileApplicationUpdate update, String description, List<String> groupNames) {
+		update.description = description;
+		update.groupNames.clear();
+		if (groupNames != null) {
+			update.groupNames.addAll(groupNames);
 		}
 	}
 
@@ -169,16 +224,10 @@ public class AppaloosaClient {
 			throws AppaloosaDeployException {
 		HttpPost httpPost = new HttpPost(publishUpdateUrl());
 
-		List<NameValuePair> parameters = new ArrayList<NameValuePair>();
-		parameters.add(new BasicNameValuePair("token", organisationToken));
-		parameters.add(new BasicNameValuePair("id", update.id.toString()));
+		List<NameValuePair> parameters = constructParametersFromUpdate(update);
 
 		try {
-			httpPost.setEntity(new UrlEncodedFormEntity(parameters));
-			HttpResponse response = httpClient.execute(httpPost);
-			String json = readBodyResponse(response);
-
-			return MobileApplicationUpdate.createFrom(json);
+			return makePublishCall(httpPost, parameters);
 		} catch (AppaloosaDeployException e) {
 			throw e;
 		} catch (Exception e) {
@@ -187,6 +236,32 @@ public class AppaloosaClient {
 		} finally {
 			resetHttpConnection();
 		}
+	}
+
+	MobileApplicationUpdate makePublishCall(HttpPost httpPost,
+			List<NameValuePair> parameters)
+			throws UnsupportedEncodingException, IOException,
+			ClientProtocolException, AppaloosaDeployException {
+		httpPost.setEntity(new UrlEncodedFormEntity(parameters));
+		HttpResponse response = httpClient.execute(httpPost);
+		String json = readBodyResponse(response);
+
+		return MobileApplicationUpdate.createFrom(json);
+	}
+
+	List<NameValuePair> constructParametersFromUpdate(
+			MobileApplicationUpdate update) {
+		List<NameValuePair> parameters = new ArrayList<NameValuePair>();
+		parameters.add(new BasicNameValuePair("token", storeToken));
+		parameters.add(new BasicNameValuePair("id", update.id.toString()));
+		if (update.description != null){
+			parameters.add(new BasicNameValuePair("mobile_application_update[description]", update.description));
+		}
+		for (String  groupName : update.groupNames) {
+			parameters.add(new BasicNameValuePair(
+					"mobile_application_update[group_names][]", groupName));
+		}
+		return parameters;
 	}
 
 	protected String readBodyResponse(HttpResponse response)
@@ -250,7 +325,7 @@ public class AppaloosaClient {
 
 	protected String updateUrl(Integer id) {
 		return getAppaloosaBaseUrl() + "mobile_application_updates/" + id
-				+ ".json?token=" + organisationToken;
+				+ ".json?token=" + storeToken;
 	}
 
 	protected void smallWait() {
@@ -266,16 +341,12 @@ public class AppaloosaClient {
 		HttpPost httpPost = new HttpPost(onBinaryUploadUrl());
 
 		List<NameValuePair> parameters = new ArrayList<NameValuePair>();
-		parameters.add(new BasicNameValuePair("token", organisationToken));
+		parameters.add(new BasicNameValuePair("token", storeToken));
 		String key = constructKey(uploadForm.getKey(), filePath);
 		parameters.add(new BasicNameValuePair("key", key));
 
 		try {
-			httpPost.setEntity(new UrlEncodedFormEntity(parameters));
-			HttpResponse response = httpClient.execute(httpPost);
-			String json = readBodyResponse(response);
-
-			return MobileApplicationUpdate.createFrom(json);
+			return makePublishCall(httpPost, parameters);
 		} catch (AppaloosaDeployException e) {
 			throw e;
 		} catch (Exception e) {
@@ -404,7 +475,7 @@ public class AppaloosaClient {
 
 	protected String newBinaryUrl() {
 		String url = getAppaloosaBaseUrl();
-		url = url + "api/upload_binary_form.json?token=" + organisationToken;
+		url = url + "api/upload_binary_form.json?token=" + storeToken;
 		return url;
 	}
 
@@ -443,8 +514,8 @@ public class AppaloosaClient {
 		this.waitDuration = waitDuration;
 	}
 	
-	void setOrganisationToken(String organisationToken) {
-		this.organisationToken = StringUtils.trimToNull(organisationToken);
+	void setStoreToken(String storeToken) {
+		this.storeToken = StringUtils.trimToNull(storeToken);
 	}
 
 	public void setProxyHost(String proxyHost) {

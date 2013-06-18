@@ -51,6 +51,12 @@ public class Main {
 					.ofType(String.class);
 			accepts("proxyPass", "The proxy user password").withOptionalArg()
 					.ofType(String.class);
+			accepts("description",
+					"Description of the uploaded application update")
+					.withOptionalArg().ofType(String.class);
+			accepts("groups",
+					"Groups that will be allowed to download this update.")
+					.withOptionalArg().ofType(String.class);
 		}
 	};
 
@@ -73,13 +79,19 @@ public class Main {
 		List<String> filenames = options.nonOptionArguments();
 
 		if (options.has("token") && !filenames.isEmpty()) {
-			client.setOrganisationToken(options.valueOf("token").toString());
+			client.setStoreToken(options.valueOf("token").toString());
 			if (options.has("proxyHost")) client.setProxyHost((String) options.valueOf("proxyHost"));
 			if (options.has("proxyUser")) client.setProxyUser((String) options.valueOf("proxyUser"));
 			if (options.has("proxyPass")) client.setProxyPass((String) options.valueOf("proxyPass"));
 			if (options.has("proxyPort")) client.setProxyPort((Integer) options.valueOf("proxyPort"));
+			String description = null;
+			if (options.has("description"))
+				description = (String) options.valueOf("description");
+			String groups = null;
+			if (options.has("groups"))
+				groups = (String) options.valueOf("groups");
 			for (String filename : filenames) {
-				client.deployFile(filename);
+				client.deployFile(filename, description, groups);
 			}
 		} else {
 			showUsage();
@@ -92,14 +104,15 @@ public class Main {
 		w.write("Use -t instead of --token.\n");
 		w.write("Deploy several file in one command.\n\n");
 
-		w.write("> java -jar appaloosa-client-1.1.0-shaded --token <store_token> /file/to/deploy\n");
-		w.write("> java -jar appaloosa-client-1.1.0-shaded -t <store_token> /file/to/deploy\n");
-		w.write("> java -jar appaloosa-client-1.1.0-shaded -t <store_token> /file/to/deploy /another/file/to/deploy\n\n");
+		w.write("> java -jar appaloosa-client-1.1.3-shaded --token <store_token> /file/to/deploy\n");
+		w.write("> java -jar appaloosa-client-1.1.3-shaded -t <store_token> /file/to/deploy\n");
+		w.write("> java -jar appaloosa-client-1.1.3-shaded -t <store_token> /file/to/deploy /another/file/to/deploy\n\n");
 
 		w.write("Exemples:\n");
-		w.write("> java -jar appaloosa-client-1.1.0-shaded --token er355fgfvc23 /tmp/my_app.apk\n");
-		w.write("> java -jar appaloosa-client-1.1.0-shaded -t er355fgfvc23 /tmp/my_app.ipa\n");
-		w.write("> java -jar appaloosa-client-1.1.0-shaded -t er355fgfvc23 /tmp/my_app.ipa /tmp/my_app.apk\n\n");
+		w.write("> java -jar appaloosa-client-1.1.3-shaded --token er355fgfvc23 /tmp/my_app.apk\n");
+		w.write("> java -jar appaloosa-client-1.1.3-shaded -t er355fgfvc23 /tmp/my_app.ipa\n");
+		w.write("> java -jar appaloosa-client-1.1.3-shaded -t er355fgfvc23 /tmp/my_app.ipa /tmp/my_app.apk\n");
+		w.write("> java -jar appaloosa-client-1.1.3-shaded --description 'Brand new version' --groups 'Group 1 | Group 3' -t er355fgfvc23 /tmp/my_app.ipa\n\n");
 
 		w.flush();
 

@@ -86,8 +86,8 @@ public class TestMainTest {
 		String[] args = new String[]{"-t", token, path};
 		
 		AppaloosaClient client = EasyMock.createMock(AppaloosaClient.class);
-		client.setOrganisationToken(token);
-		client.deployFile(path);
+		client.setStoreToken(token);
+		client.deployFile(path, null, (String) null);
 		
 		EasyMock.replay(client);
 		main.setAppaloosaClient(client);
@@ -104,8 +104,8 @@ public class TestMainTest {
 		String[] args = new String[]{path, "-t", token};
 		
 		AppaloosaClient client = EasyMock.createMock(AppaloosaClient.class);
-		client.setOrganisationToken(token);
-		client.deployFile(path);
+		client.setStoreToken(token);
+		client.deployFile(path, null, (String) null);
 		
 		EasyMock.replay(client);
 		main.setAppaloosaClient(client);
@@ -124,9 +124,9 @@ public class TestMainTest {
 		String[] args = new String[]{path, "-t", token, otherPath};
 		
 		AppaloosaClient client = EasyMock.createMock(AppaloosaClient.class);
-		client.setOrganisationToken(token);
-		client.deployFile(path);
-		client.deployFile(otherPath);
+		client.setStoreToken(token);
+		client.deployFile(path, null, (String) null);
+		client.deployFile(otherPath, null, (String) null);
 		
 		EasyMock.replay(client);
 		
@@ -152,13 +152,37 @@ public class TestMainTest {
 				};
 		
 		AppaloosaClient client = EasyMock.createMock(AppaloosaClient.class);
-		client.setOrganisationToken(token);
+		client.setStoreToken(token);
 		client.setProxyHost(proxyHost);
 		client.setProxyPort(proxyPort);
 		client.setProxyUser(proxyUser);
 		client.setProxyPass(proxyPass);
 		
-		client.deployFile(path);
+		client.deployFile(path, null, (String) null);
+		
+		EasyMock.replay(client);
+		
+		main.setAppaloosaClient(client);
+		main.execute(args);		
+		
+		EasyMock.verify(client);
+	}
+	
+	@Test
+	public void executeShouldCallAppaloosaClientWithDescriptionAndGroups() throws AppaloosaDeployException, IOException{
+		String token = "a_token";
+		String path = "/path/to/file";
+		String description = "My description";
+		String groupNames = "Group 1 | Group 2";
+		String[] args = new String[]{path, "-t", token,
+				"--description", description,
+				"--groups", groupNames,
+				};
+		
+		AppaloosaClient client = EasyMock.createMock(AppaloosaClient.class);
+		client.setStoreToken(token);
+		
+		client.deployFile(path, description, groupNames);
 		
 		EasyMock.replay(client);
 		

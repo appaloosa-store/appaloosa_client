@@ -20,18 +20,20 @@ Usage: appaloosa-deploy -t <store_token> /file/to/deploy [options]
 Use -t instead of --token.
 Deploy several file in one command.
 
-> java -jar appaloosa-client-1.1.0-shaded --token <store_token> /file/to/deploy
+> java -jar appaloosa-client-1.1.3-shaded --token <store_token> /file/to/deploy
 
-> java -jar appaloosa-client-1.1.0-shaded -t <store_token> /file/to/deploy
+> java -jar appaloosa-client-1.1.3-shaded -t <store_token> /file/to/deploy
 
-> java -jar appaloosa-client-1.1.0-shaded -t <store_token> /file/to/deploy /another/file/to/deploy
+> java -jar appaloosa-client-1.1.3-shaded -t <store_token> /file/to/deploy /another/file/to/deploy
 
 Exemples:
-> java -jar appaloosa-client-1.1.0-shaded --token er355fgfvc23 /tmp/my_app.apk
+> java -jar appaloosa-client-1.1.3-shaded --token er355fgfvc23 /tmp/my_app.apk
 
-> java -jar appaloosa-client-1.1.0-shaded -t er355fgfvc23 /tmp/my_app.ipa
+> java -jar appaloosa-client-1.1.3-shaded -t er355fgfvc23 /tmp/my_app.ipa
 
-> java -jar appaloosa-client-1.1.0-shaded -t er355fgfvc23 /tmp/my_app.ipa /tmp/my_app.apk
+> java -jar appaloosa-client-1.1.3-shaded -t er355fgfvc23 /tmp/my_app.ipa /tmp/my_app.apk
+
+> java -jar appaloosa-client-1.1.3-shaded --description 'Brand new version' --groups 'Group 1 | Group 3' -t er355fgfvc23 /tmp/my_app.ipa
 
 
 Options                             
@@ -40,6 +42,8 @@ Options
 * --proxyPort [Integer]                   The proxy port                         
 * --proxyUser                             The proxy username                     
 * --token                                 Store token. Find it on your store's settings page.
+* --description 													Text description for this update. When not specified, the previous update description will be used.
+* --groupNames 														List of group names that will be allowed to see and install this update. When null or empty, the update will be publish to previous allowed groups if a previous update exists, otherwise it will be published to default group "everybody". You can also specify to publish your file to the default group "everybody", you have to use the name "everybody" even in French.
 
 
 Contributing
