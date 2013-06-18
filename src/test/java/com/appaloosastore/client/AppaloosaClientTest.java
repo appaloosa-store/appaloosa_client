@@ -37,6 +37,7 @@ import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -287,7 +288,7 @@ public class AppaloosaClientTest {
 		BasicHttpResponse response = new BasicHttpResponse(new ProtocolVersion(
 				"HTTP", 1, 1), 422, null);
 		response.setEntity(new StringEntity(
-				"{\"errors\": [\"invalid token\"]}", null));
+				"{\"errors\": [\"invalid token\"]}", Charset.forName("UTF-8")));
 
 		AppaloosaDeployException e = appaloosaClient
 				.createExceptionWithAppaloosaErrorResponse(response, "PREFIX ");

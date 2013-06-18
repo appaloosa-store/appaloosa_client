@@ -76,7 +76,7 @@ public class Main {
 	protected void execute(String[] args) throws AppaloosaDeployException,
 			IOException {
 		OptionSet options = parser.parse(args);
-		List<String> filenames = options.nonOptionArguments();
+		List<?> filenames = options.nonOptionArguments();
 
 		if (options.has("token") && !filenames.isEmpty()) {
 			client.setStoreToken(options.valueOf("token").toString());
@@ -90,8 +90,8 @@ public class Main {
 			String groups = null;
 			if (options.has("groups"))
 				groups = (String) options.valueOf("groups");
-			for (String filename : filenames) {
-				client.deployFile(filename, description, groups);
+			for (Object filename : filenames) {
+				client.deployFile((String) filename, description, groups);
 			}
 		} else {
 			showUsage();
