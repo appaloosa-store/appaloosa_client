@@ -9,7 +9,7 @@
 	<name>appaloosa-client</name>
 	<description>Publish your mobile applications (Android, iOS, ...) to the &lt;a href="http://www.appaloosa-store.com"&gt;appaloosa-store&lt;/a&gt; platform.</description>
 
-	<url>https://github.com/octo-online/appaloosa-client</url>
+	<url>https://github.com/appaloosa-store/appaloosa_client</url>
 	<licenses>
 		<license>
 			<name>MIT</name>
@@ -101,9 +101,9 @@
 	</distributionManagement>
 
 	<scm>
-		<connection>scm:git:ssh://github.com/octo-online/appaloosa-client.git</connection>
-		<developerConnection>scm:git:ssh://git@github.com/octo-online/appaloosa-client.git</developerConnection>
-		<url>https://github.com/octo-online/appaloosa-client</url>
+		<connection>scm:git:ssh://github.com/appaloosa-store/appaloosa_client.git</connection>
+		<developerConnection>scm:git:ssh://git@github.com/appaloosa-store/appaloosa_client.git</developerConnection>
+		<url>https://github.com/appaloosa-store/appaloosa_client</url>
 	  <tag>HEAD</tag>
   </scm>
 
