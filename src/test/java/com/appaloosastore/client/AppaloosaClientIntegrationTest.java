@@ -52,7 +52,7 @@ public class AppaloosaClientIntegrationTest {
 	@Ignore
 	public void deployFile() throws AppaloosaDeployException{
 		appaloosaClient.deployFile("/path/to/my/app-1.3.ipa", null,
-				"Test Group");
+				"Test Group", null);
 	}
 
 	@Test

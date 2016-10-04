@@ -35,6 +35,7 @@ Exemples:
 
 > java -jar appaloosa-client-1.1.3-shaded --description 'Brand new version' --groups 'Group 1 | Group 3' -t er355fgfvc23 /tmp/my_app.ipa
 
+> java -jar appaloosa-client-1.1.3-shaded --description 'Brand new version' --groups 'Group 1 | Group 3' -t er355fgfvc23 --changelog 'remove deprecated UISearchDisplayController' /tmp/my_app.ipa
 
 Options                             
 * --proxyHost                             The proxy hostname                     
@@ -44,6 +45,7 @@ Options
 * --token                                 Store token. Find it on your store's settings page.
 * --description 													Text description for this update. When not specified, the previous update description will be used.
 * --groupNames 														List of group names that will be allowed to see and install this update. When null or empty, the update will be publish to previous allowed groups if a previous update exists, otherwise it will be published to default group "everybody". You can also specify to publish your file to the default group "everybody", you have to use the name "everybody" even in French.
+* --changelog 													    Text changelog for this update. Can be empty.
 
 
 Contributing
