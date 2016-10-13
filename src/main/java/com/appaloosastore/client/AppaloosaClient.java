@@ -107,8 +107,7 @@ public class AppaloosaClient {
 	}
 
 	/**
-	 * {@link #deployFile(String, String, List<String>, String) deployFile} with null description,
-     *                                                                      null groupNames and null changelog.
+	 * {@link #deployFile(String, String, List<String>, String) deployFile} with null description, null groupNames and null changelog.
 	 * @param filePath
 	 * @throws AppaloosaDeployException
 	 * */
