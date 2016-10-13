@@ -45,7 +45,7 @@ Options
 * --token                                 Store token. Find it on your store's settings page.
 * --description 													Text description for this update. When not specified, the previous update description will be used.
 * --groupNames 														List of group names that will be allowed to see and install this update. When null or empty, the update will be publish to previous allowed groups if a previous update exists, otherwise it will be published to default group "everybody". You can also specify to publish your file to the default group "everybody", you have to use the name "everybody" even in French.
-* --changelog 													    Text changelog for this update. Can be empty.
+* --changelog 													    Text changelog for this update. Optional.
 
 
 Contributing

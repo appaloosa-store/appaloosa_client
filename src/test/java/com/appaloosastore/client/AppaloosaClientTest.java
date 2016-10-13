@@ -470,7 +470,7 @@ public class AppaloosaClientTest {
 		List<NameValuePair> params = appaloosaClient.constructParametersFromUpdate(update);
 		assertEquals(2, params.size());
 
-		update.changelog = "";
+		update.changelog = "my cool changelog";
 		params = appaloosaClient.constructParametersFromUpdate(update);
 		assertEquals(3, params.size());
 		assertTrue(params.contains(new BasicNameValuePair("mobile_application_update[changelog]", update.changelog)));
@@ -494,24 +494,6 @@ public class AppaloosaClientTest {
 			assertTrue(params.contains(new BasicNameValuePair(
 					"mobile_application_update[group_names][]", groupName)));
 		}
-	}	
-	
-	@Test
-	public void setUpdateParametersShouldUpdateDescriptionAndGroupNames(){
-		MobileApplicationUpdate update = new MobileApplicationUpdate();
-		String description = "New Desc";
-		String changelog = null;
-		List<String> groupNames = new ArrayList<String>();
-		groupNames.add("Group1");
-		groupNames.add("Group2");
-		
-		appaloosaClient.setUpdateParameters(update, description, groupNames, changelog);
-		
-		assertEquals(description, update.description);
-		assertEquals(2, update.groupNames.size());
-		assertTrue(update.groupNames.contains("Group1"));
-		assertTrue(update.groupNames.contains("Group2"));
-		assertEquals(changelog, update.changelog);
 	}
 
 	@Test
