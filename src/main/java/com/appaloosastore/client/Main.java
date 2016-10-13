@@ -54,6 +54,9 @@ public class Main {
 			accepts("description",
 					"Description of the uploaded application update")
 					.withOptionalArg().ofType(String.class);
+			accepts("changelog",
+					"Changelog of the uploaded application update")
+					.withOptionalArg().ofType(String.class);
 			accepts("groups",
 					"Groups that will be allowed to download this update.")
 					.withOptionalArg().ofType(String.class);
@@ -87,11 +90,14 @@ public class Main {
 			String description = null;
 			if (options.has("description"))
 				description = (String) options.valueOf("description");
+			String changelog = null;
+			if(options.has("changelog"))
+				changelog = (String) options.valueOf("changelog");
 			String groups = null;
 			if (options.has("groups"))
 				groups = (String) options.valueOf("groups");
 			for (Object filename : filenames) {
-				client.deployFile((String) filename, description, groups);
+				client.deployFile((String) filename, description, groups, changelog);
 			}
 		} else {
 			showUsage();

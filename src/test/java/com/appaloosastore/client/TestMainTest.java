@@ -87,7 +87,7 @@ public class TestMainTest {
 		
 		AppaloosaClient client = EasyMock.createMock(AppaloosaClient.class);
 		client.setStoreToken(token);
-		client.deployFile(path, null, (String) null);
+		client.deployFile(path, null, (String) null, null);
 		
 		EasyMock.replay(client);
 		main.setAppaloosaClient(client);
@@ -105,7 +105,7 @@ public class TestMainTest {
 		
 		AppaloosaClient client = EasyMock.createMock(AppaloosaClient.class);
 		client.setStoreToken(token);
-		client.deployFile(path, null, (String) null);
+		client.deployFile(path, null, (String) null, null);
 		
 		EasyMock.replay(client);
 		main.setAppaloosaClient(client);
@@ -125,8 +125,8 @@ public class TestMainTest {
 		
 		AppaloosaClient client = EasyMock.createMock(AppaloosaClient.class);
 		client.setStoreToken(token);
-		client.deployFile(path, null, (String) null);
-		client.deployFile(otherPath, null, (String) null);
+		client.deployFile(path, null, (String) null, null);
+		client.deployFile(otherPath, null, (String) null, null);
 		
 		EasyMock.replay(client);
 		
@@ -158,7 +158,7 @@ public class TestMainTest {
 		client.setProxyUser(proxyUser);
 		client.setProxyPass(proxyPass);
 		
-		client.deployFile(path, null, (String) null);
+		client.deployFile(path, null, (String) null, null);
 		
 		EasyMock.replay(client);
 		
@@ -169,20 +169,23 @@ public class TestMainTest {
 	}
 	
 	@Test
-	public void executeShouldCallAppaloosaClientWithDescriptionAndGroups() throws AppaloosaDeployException, IOException{
+	public void executeShouldCallAppaloosaClientWithDescriptionAndGroupsAndChangelog()
+                throws AppaloosaDeployException, IOException{
 		String token = "a_token";
 		String path = "/path/to/file";
 		String description = "My description";
+		String changelog = "My changelog";
 		String groupNames = "Group 1 | Group 2";
 		String[] args = new String[]{path, "-t", token,
 				"--description", description,
 				"--groups", groupNames,
+				"--changelog", changelog
 				};
 		
 		AppaloosaClient client = EasyMock.createMock(AppaloosaClient.class);
 		client.setStoreToken(token);
 		
-		client.deployFile(path, description, groupNames);
+		client.deployFile(path, description, groupNames, changelog);
 		
 		EasyMock.replay(client);
 		

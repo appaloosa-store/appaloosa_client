@@ -43,19 +43,16 @@ public class MobileApplicationUpdate {
 	public String statusMessage;
 	@JsonProperty(value = "application_id")
 	public String applicationId;
-
 	public String description;
-
+	public String changelog;
 	public List<String> groupNames = new ArrayList<String>();
 
-	public static MobileApplicationUpdate createFrom(String json)
-			throws AppaloosaDeployException {
+	public static MobileApplicationUpdate createFrom(String json) throws AppaloosaDeployException {
 		try {
 			return jsonMapper.readValue(json, MobileApplicationUpdate.class);
 		} catch (Exception e) {
 			throw new AppaloosaDeployException(
-					"Impossible to parse mobileApplicationUpdate string: "
-							+ json, e);
+					"Impossible to parse mobileApplicationUpdate string: " + json, e);
 		}
 	}
 

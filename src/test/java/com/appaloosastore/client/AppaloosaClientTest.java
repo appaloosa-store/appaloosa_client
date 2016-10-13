@@ -443,13 +443,13 @@ public class AppaloosaClientTest {
 		
 		verify(mockedAppaloosaClient);
 	}
-	
+
 	@Test
 	public void constructParametersFromUpdateShouldUseDescriptionIfSpecified()
 			throws AppaloosaDeployException, UnsupportedEncodingException, ClientProtocolException, IOException {
 		MobileApplicationUpdate update = new MobileApplicationUpdate();
 		update.id = 1;
-		
+
 		update.description = null;
 		List<NameValuePair> params = appaloosaClient.constructParametersFromUpdate(update);
 		assertEquals(2, params.size());
@@ -458,8 +458,24 @@ public class AppaloosaClientTest {
 		params = appaloosaClient.constructParametersFromUpdate(update);
 		assertEquals(3, params.size());
 		assertTrue(params.contains(new BasicNameValuePair("mobile_application_update[description]", update.description)));
-	}	
-	
+	}
+
+	@Test
+	public void constructParametersFromUpdateShouldUseChangelogIfSpecified()
+			throws AppaloosaDeployException, UnsupportedEncodingException, ClientProtocolException, IOException {
+		MobileApplicationUpdate update = new MobileApplicationUpdate();
+		update.id = 1;
+
+		update.changelog = null;
+		List<NameValuePair> params = appaloosaClient.constructParametersFromUpdate(update);
+		assertEquals(2, params.size());
+
+		update.changelog = "my cool changelog";
+		params = appaloosaClient.constructParametersFromUpdate(update);
+		assertEquals(3, params.size());
+		assertTrue(params.contains(new BasicNameValuePair("mobile_application_update[changelog]", update.changelog)));
+	}
+
 	@Test
 	public void constructParametersFromUpdateShouldUseGroupsIfSpecified()
 			throws AppaloosaDeployException, UnsupportedEncodingException, ClientProtocolException, IOException {
@@ -478,22 +494,24 @@ public class AppaloosaClientTest {
 			assertTrue(params.contains(new BasicNameValuePair(
 					"mobile_application_update[group_names][]", groupName)));
 		}
-	}	
-	
+	}
+
 	@Test
-	public void setUpdateParametersShouldUpdateDescriptionAndGroupNames(){
+	public void setUpdateParametersShouldUpdateDescriptionAndGroupNamesAndChangelog(){
 		MobileApplicationUpdate update = new MobileApplicationUpdate();
 		String description = "New Desc";
+		String changelog = "A log of the changes";
 		List<String> groupNames = new ArrayList<String>();
 		groupNames.add("Group1");
 		groupNames.add("Group2");
-		
-		appaloosaClient.setUpdateParameters(update, description, groupNames);
-		
+
+		appaloosaClient.setUpdateParameters(update, description, groupNames, changelog);
+
 		assertEquals(description, update.description);
 		assertEquals(2, update.groupNames.size());
 		assertTrue(update.groupNames.contains("Group1"));
 		assertTrue(update.groupNames.contains("Group2"));
+		assertEquals(changelog, update.changelog);
 	}
 	
 	@Test

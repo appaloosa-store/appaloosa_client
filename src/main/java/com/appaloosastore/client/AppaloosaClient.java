@@ -61,7 +61,8 @@ import org.apache.http.util.EntityUtils;
  * 	AppaloosaClient client = new AppaloosaClient("my_store_token"); <br>
  *  try {                                                              <br>
  *    client.deployFile("/path/to/archive", "optional description",    <br>
- *    					"some group | another group | also optional"); <br>
+ *    					"some group | another group | also optional",  <br>
+*    					"optional changelog);                          <br>
  *    System.out.println("Archive deployed");                          <br>
  *  } catch (AppaloosaDeployException e) {                             <br>
  *  	System.err.println("Something went wrong");                    <br>
@@ -106,28 +107,29 @@ public class AppaloosaClient {
 	}
 
 	/**
-	 * {@link #deployFile(String, String, List<String>) deployFile} with null description and null groupNames.
+	 * {@link #deployFile(String, String, List<String>, String) deployFile} with null description,
+     *                                                                      null groupNames and null changelog.
 	 * @param filePath
 	 * @throws AppaloosaDeployException
 	 * */
 	public void deployFile(String filePath) throws AppaloosaDeployException {
-		deployFile(filePath, null, (List<String>) null);
+		deployFile(filePath, null, (List<String>) null, null);
 	}
 		
 	/**
-	 * {@link #deployFile(String, String, List<String>) deployFile} with
-	 * groupNames as String.
+	 * {@link #deployFile(String, String, List<String>, String) deployFile} with groupNames as String.
 	 * 
 	 * @param filePath
 	 * @param description
 	 * @param groupNames
 	 *            List of group names in a string format, group names should be
 	 *            separated by '|'. Example: "Group 1 | Group 2"
+     * @param changelog
 	 * @throws AppaloosaDeployException
 	 * */
-	public void deployFile(String filePath, String description,
-			String groupNames) throws AppaloosaDeployException {
-		deployFile(filePath, description, parseGroupNames(groupNames));
+	public void deployFile(String filePath, String description, String groupNames, String changelog)
+                throws AppaloosaDeployException {
+		deployFile(filePath, description, parseGroupNames(groupNames), changelog);
 	}
 
 	List<String> parseGroupNames(String groupNames) {
@@ -144,17 +146,18 @@ public class AppaloosaClient {
 	}
 
 	/**
-	 * @param filePath
-	 *            physical path of the file to upload
+	 * @param filePath physical path of the file to upload
 	 * @param description Text description for this update. Use null if you want to use the previous description.
 	 * @param groupNames List of group names that will be allowed to see and install this update. 
 	 * 			When null or empty, the update will be publish to previous allowed groups if a previous update exists, 
 	 * 			otherwise it will be published to default group "everybody".
-	 * 			You can also specify to publish your file to the default group "everybody", you have to use the name "everybody" even in French.   
+	 * 			You can also specify to publish your file to the default group "everybody", you have to use the name "everybody" even in French.
+     * @param changelog Text changelog for this update. Can be empty.
 	 * @throws AppaloosaDeployException
 	 *             when something went wrong
 	 * */
-	public void deployFile(String filePath, String description, List<String> groupNames) throws AppaloosaDeployException {
+	public void deployFile(String filePath, String description, List<String> groupNames, String changelog)
+            throws AppaloosaDeployException {
 		log("== Deploy file " + filePath + " to Appaloosa");
 		log("== reseting http connection");
 		resetHttpConnection();
@@ -178,7 +181,7 @@ public class AppaloosaClient {
 		// publish update
 		if (update.hasError() == false) {
 			log("==   Publish uploaded file");
-			setUpdateParameters(update, description, groupNames);
+			setUpdateParameters(update, description, groupNames, changelog);
 			publish(update);
 			log("== File deployed and published successfully");
 		} else {
@@ -188,8 +191,12 @@ public class AppaloosaClient {
 		}
 	}
 
-	void setUpdateParameters(MobileApplicationUpdate update, String description, List<String> groupNames) {
+	void setUpdateParameters(MobileApplicationUpdate update,
+							 String description,
+							 List<String> groupNames,
+							 String changelog) {
 		update.description = description;
+		update.changelog = changelog;
 		update.groupNames.clear();
 		if (groupNames != null) {
 			update.groupNames.addAll(groupNames);
@@ -254,9 +261,12 @@ public class AppaloosaClient {
 		List<NameValuePair> parameters = new ArrayList<NameValuePair>();
 		parameters.add(new BasicNameValuePair("token", storeToken));
 		parameters.add(new BasicNameValuePair("id", update.id.toString()));
-		if (update.description != null){
-			parameters.add(new BasicNameValuePair("mobile_application_update[description]", update.description));
-		}
+        if (update.description != null){
+            parameters.add(new BasicNameValuePair("mobile_application_update[description]", update.description));
+        }
+        if (update.changelog != null){
+            parameters.add(new BasicNameValuePair("mobile_application_update[changelog]", update.changelog));
+        }
 		for (String  groupName : update.groupNames) {
 			parameters.add(new BasicNameValuePair(
 					"mobile_application_update[group_names][]", groupName));
