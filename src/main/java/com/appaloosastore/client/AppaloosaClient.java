@@ -107,8 +107,8 @@ public class AppaloosaClient {
 	}
 
 	/**
-	 * {@link #deployFile(String, String, List<String>, String) deployFile} with null description, null groupNames and null changelog.
-	 * @param filePath
+	 * {@link #deployFile(String, String, List, String)} will all params set to null.
+	 * @param filePath Path to the binary
 	 * @throws AppaloosaDeployException
 	 * */
 	public void deployFile(String filePath) throws AppaloosaDeployException {
@@ -116,14 +116,13 @@ public class AppaloosaClient {
 	}
 		
 	/**
-	 * {@link #deployFile(String, String, List<String>, String) deployFile} with groupNames as String.
-	 * 
-	 * @param filePath
-	 * @param description
+	 * {@link #deployFile(String, String, String, String)} with groupNames as String.
+	 * @param filePath Path to the binary
+	 * @param description Text changelog for this update. Can be empty.
 	 * @param groupNames
 	 *            List of group names in a string format, group names should be
 	 *            separated by '|'. Example: "Group 1 | Group 2"
-     * @param changelog
+     * @param changelog Changelog of the update
 	 * @throws AppaloosaDeployException
 	 * */
 	public void deployFile(String filePath, String description, String groupNames, String changelog)
@@ -513,7 +512,7 @@ public class AppaloosaClient {
 	 * To change port of appaloosa server. Mostly for tests usage or for future
 	 * evolutions.
 	 * 
-	 * @param appaloosaUrl
+	 * @param port
 	 */
 	public void setPort(int port) {
 		appaloosaPort = port;
