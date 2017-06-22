@@ -1,7 +1,7 @@
 Appaloosa Client
 ================
 
-Publish your mobile applications (Android, iOS, ...) to the http://www.appaloosa-store.com platform.
+Publish your mobile applications (Android, iOS, ...) to the https://www.appaloosa-store.com platform.
 
 Embedd the Appaloosa client
 ---------------------------

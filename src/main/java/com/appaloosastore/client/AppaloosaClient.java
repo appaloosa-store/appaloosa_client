@@ -56,7 +56,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 
 /**
- * Client for appaloosa, http://www.appaloosa-store.com. Usage : <br>
+ * Client for appaloosa, https://www.appaloosa-store.com. Usage : <br>
  * <code>
  * 	AppaloosaClient client = new AppaloosaClient("my_store_token"); <br>
  *  try {                                                              <br>
@@ -79,7 +79,7 @@ public class AppaloosaClient {
 
 	private PrintStream logger;
 	private HttpClient httpClient;
-	private String appaloosaUrl = "http://www.appaloosa-store.com";
+	private String appaloosaUrl = "https://www.appaloosa-store.com";
 	private int appaloosaPort = 80;
 	private int waitDuration = 2000;
 	private String proxyHost;
