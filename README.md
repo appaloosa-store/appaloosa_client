@@ -14,7 +14,7 @@ For exemple, see the [appaloosa plugin](https://wiki.jenkins-ci.org/display/JENK
 
 Use the command line
 ---------------------------
-Use the command line directly with the shaded jar (http://central.maven.org/maven2/com/appaloosa-store/appaloosa-client/1.3/appaloosa-client-1.3.jar).
+Use the command line directly with the jar (http://central.maven.org/maven2/com/appaloosa-store/appaloosa-client/1.3/appaloosa-client-1.3.jar).
 
 Usage: appaloosa-deploy -t <store_token> /file/to/deploy [options]
 Use -t instead of --token.
