@@ -7,35 +7,35 @@ Embedd the Appaloosa client
 ---------------------------
 Use this project in yours to provide your user a integration with Appaloosa.
 
-The jars are available on the maven repo: https://github.com/joel1di1/joel1di1-mvn-repo/raw/master/releases/
+The jars are available on the maven repo: https://mvnrepository.com/artifact/com.appaloosa-store/appaloosa-client/
 
 For exemple, see the [appaloosa plugin](https://wiki.jenkins-ci.org/display/JENKINS/Appaloosa+Plugin) code: https://github.com/jenkinsci/appaloosa-plugin
 
 
 Use the command line
 ---------------------------
-Use the command line directly with the shaded jar (https://github.com/joel1di1/joel1di1-mvn-repo/raw/master/releases/com/appaloosa-store/appaloosa-client/1.1.0/appaloosa-client-1.1.0.jar).
+Use the command line directly with the shaded jar (http://central.maven.org/maven2/com/appaloosa-store/appaloosa-client/1.3/appaloosa-client-1.3.jar).
 
 Usage: appaloosa-deploy -t <store_token> /file/to/deploy [options]
 Use -t instead of --token.
 Deploy several file in one command.
 
-> java -jar appaloosa-client-1.1.3-shaded --token <store_token> /file/to/deploy
+> java -jar appaloosa-client-1.3 --token <store_token> /file/to/deploy
 
-> java -jar appaloosa-client-1.1.3-shaded -t <store_token> /file/to/deploy
+> java -jar appaloosa-client-1.3 -t <store_token> /file/to/deploy
 
-> java -jar appaloosa-client-1.1.3-shaded -t <store_token> /file/to/deploy /another/file/to/deploy
+> java -jar appaloosa-client-1.3 -t <store_token> /file/to/deploy /another/file/to/deploy
 
 Exemples:
-> java -jar appaloosa-client-1.1.3-shaded --token er355fgfvc23 /tmp/my_app.apk
+> java -jar appaloosa-client-1.3 --token er355fgfvc23 /tmp/my_app.apk
 
-> java -jar appaloosa-client-1.1.3-shaded -t er355fgfvc23 /tmp/my_app.ipa
+> java -jar appaloosa-client-1.3 -t er355fgfvc23 /tmp/my_app.ipa
 
-> java -jar appaloosa-client-1.1.3-shaded -t er355fgfvc23 /tmp/my_app.ipa /tmp/my_app.apk
+> java -jar appaloosa-client-1.3 -t er355fgfvc23 /tmp/my_app.ipa /tmp/my_app.apk
 
-> java -jar appaloosa-client-1.1.3-shaded --description 'Brand new version' --groups 'Group 1 | Group 3' -t er355fgfvc23 /tmp/my_app.ipa
+> java -jar appaloosa-client-1.3 --description 'Brand new version' --groups 'Group 1 | Group 3' -t er355fgfvc23 /tmp/my_app.ipa
 
-> java -jar appaloosa-client-1.1.3-shaded --description 'Brand new version' --groups 'Group 1 | Group 3' -t er355fgfvc23 --changelog 'remove deprecated UISearchDisplayController' /tmp/my_app.ipa
+> java -jar appaloosa-client-1.3 --description 'Brand new version' --groups 'Group 1 | Group 3' -t er355fgfvc23 --changelog 'remove deprecated UISearchDisplayController' /tmp/my_app.ipa
 
 Options                             
 * --proxyHost                             The proxy hostname                     
