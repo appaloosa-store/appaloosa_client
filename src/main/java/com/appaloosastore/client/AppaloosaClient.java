@@ -236,6 +236,7 @@ public class AppaloosaClient {
 		} catch (AppaloosaDeployException e) {
 			throw e;
 		} catch (Exception e) {
+            e.printStackTrace();
 			throw new AppaloosaDeployException(
 					"Error during publishing update (id=" + update.id + ")", e);
 		} finally {
@@ -299,6 +300,7 @@ public class AppaloosaClient {
 		} catch (AppaloosaDeployException e) {
 			throw e;
 		} catch (Exception e) {
+            e.printStackTrace();
 			throw new AppaloosaDeployException(
 					"Error while get details for update id = " + id, e);
 		} finally {
@@ -444,6 +446,7 @@ public class AppaloosaClient {
 		} catch (AppaloosaDeployException e) {
 			throw e;
 		} catch (Exception e) {
+            e.printStackTrace();
 			throw new AppaloosaDeployException(
 					"impossible to retrieve upload information from "
 							+ appaloosaUrl, e);
