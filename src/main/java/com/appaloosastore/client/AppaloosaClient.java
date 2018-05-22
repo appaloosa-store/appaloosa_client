@@ -54,6 +54,7 @@ import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
+import org.apache.commons.lang.exception.ExceptionUtils;
 
 /**
  * Client for appaloosa, https://www.appaloosa-store.com. Usage : <br>
@@ -68,13 +69,13 @@ import org.apache.http.util.EntityUtils;
  *  	System.err.println("Something went wrong");                    <br>
  *  }                                                                  <br>
  * </code> Store token is available on settings page.
- * 
+ *
  * @author Benoit Lafontaine
  */
 public class AppaloosaClient {
-	
-	public static int MAX_RETRIES = 30; 
-	
+
+	public static int MAX_RETRIES = 30;
+
 	private String storeToken;
 
 	private PrintStream logger;
@@ -236,7 +237,7 @@ public class AppaloosaClient {
 		} catch (AppaloosaDeployException e) {
 			throw e;
 		} catch (Exception e) {
-            e.printStackTrace();
+            log(ExceptionUtils.getStackTrace(e));
 			throw new AppaloosaDeployException(
 					"Error during publishing update (id=" + update.id + ")", e);
 		} finally {
@@ -300,7 +301,7 @@ public class AppaloosaClient {
 		} catch (AppaloosaDeployException e) {
 			throw e;
 		} catch (Exception e) {
-            e.printStackTrace();
+            log(ExceptionUtils.getStackTrace(e));
 			throw new AppaloosaDeployException(
 					"Error while get details for update id = " + id, e);
 		} finally {
@@ -389,7 +390,7 @@ public class AppaloosaClient {
 		} catch (AppaloosaDeployException e) {
 			throw e;
 		} catch (Exception e) {
-			e.printStackTrace();
+            log(ExceptionUtils.getStackTrace(e));
 			throw new AppaloosaDeployException("Error while uploading "
 					+ filePath + " : " + e.getMessage(), e);
 		} finally {
@@ -446,7 +447,7 @@ public class AppaloosaClient {
 		} catch (AppaloosaDeployException e) {
 			throw e;
 		} catch (Exception e) {
-            e.printStackTrace();
+            log(ExceptionUtils.getStackTrace(e));
 			throw new AppaloosaDeployException(
 					"impossible to retrieve upload information from "
 							+ appaloosaUrl, e);
