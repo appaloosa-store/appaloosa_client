@@ -81,17 +81,17 @@ public class AppaloosaClient {
 	private PrintStream logger;
 	private HttpClient httpClient;
 	private String appaloosaUrl = "https://www.appaloosa-store.com";
-	private int appaloosaPort = 80;
+	private int appaloosaPort = 443;
 	private int waitDuration = 2000;
 	private String proxyHost;
 	private String proxyUser;
 	private String proxyPass;
 	private int    proxyPort;
 
-	public AppaloosaClient() {	
+	public AppaloosaClient() {
 		logger = System.out;
 	}
-	
+
 	public AppaloosaClient(String storeToken) {
 		this();
 		setStoreToken(storeToken);
@@ -115,7 +115,7 @@ public class AppaloosaClient {
 	public void deployFile(String filePath) throws AppaloosaDeployException {
 		deployFile(filePath, null, (List<String>) null, null);
 	}
-		
+
 	/**
 	 * {@link #deployFile(String, String, String, String)} with groupNames as String.
 	 * @param filePath Path to the binary
@@ -147,8 +147,8 @@ public class AppaloosaClient {
 	/**
 	 * @param filePath physical path of the file to upload
 	 * @param description Text description for this update. Use null if you want to use the previous description.
-	 * @param groupNames List of group names that will be allowed to see and install this update. 
-	 * 			When null or empty, the update will be publish to previous allowed groups if a previous update exists, 
+	 * @param groupNames List of group names that will be allowed to see and install this update.
+	 * 			When null or empty, the update will be publish to previous allowed groups if a previous update exists,
 	 * 			otherwise it will be published to default group "everybody".
 	 * 			You can also specify to publish your file to the default group "everybody", you have to use the name "everybody" even in French.
      * @param changelog Text changelog for this update. Can be empty.
@@ -493,7 +493,7 @@ public class AppaloosaClient {
 
 	protected String getAppaloosaBaseUrl() {
 		String url = appaloosaUrl;
-		if (appaloosaPort != 80) {
+		if (appaloosaPort != 443) {
 			url = url + ":" + appaloosaPort;
 		}
 		if (!url.endsWith("/")) {
@@ -505,7 +505,7 @@ public class AppaloosaClient {
 	/**
 	 * To change the url of appaloosa server. Mostly for tests usage or for
 	 * future evolutions.
-	 * 
+	 *
 	 * @param appaloosaUrl
 	 */
 	public void setBaseUrl(String appaloosaUrl) {
@@ -515,7 +515,7 @@ public class AppaloosaClient {
 	/**
 	 * To change port of appaloosa server. Mostly for tests usage or for future
 	 * evolutions.
-	 * 
+	 *
 	 * @param port
 	 */
 	public void setPort(int port) {
@@ -525,7 +525,7 @@ public class AppaloosaClient {
 	protected void setWaitDuration(int waitDuration) {
 		this.waitDuration = waitDuration;
 	}
-	
+
 	void setStoreToken(String storeToken) {
 		this.storeToken = StringUtils.trimToNull(storeToken);
 	}
