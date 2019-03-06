@@ -14,28 +14,28 @@ For exemple, see the [appaloosa plugin](https://wiki.jenkins-ci.org/display/JENK
 
 Use the command line
 ---------------------------
-Use the command line directly with the jar (http://central.maven.org/maven2/com/appaloosa-store/appaloosa-client/1.3/appaloosa-client-1.3.jar).
+Use the command line directly with the **shaded** jar downloaded from http://central.maven.org/maven2/com/appaloosa-store/appaloosa-client. For example http://central.maven.org/maven2/com/appaloosa-store/appaloosa-client/1.10/appaloosa-client-1.10-shaded.jar
 
 Usage: appaloosa-deploy -t <store_token> /file/to/deploy [options]
 Use -t instead of --token.
 Deploy several file in one command.
 
-> java -jar appaloosa-client-1.3 --token <store_token> /file/to/deploy
+> java -jar appaloosa-client-1.10 --token <store_token> /file/to/deploy
 
-> java -jar appaloosa-client-1.3 -t <store_token> /file/to/deploy
+> java -jar appaloosa-client-1.10 -t <store_token> /file/to/deploy
 
-> java -jar appaloosa-client-1.3 -t <store_token> /file/to/deploy /another/file/to/deploy
+> java -jar appaloosa-client-1.10 -t <store_token> /file/to/deploy /another/file/to/deploy
 
 Exemples:
-> java -jar appaloosa-client-1.3 --token er355fgfvc23 /tmp/my_app.apk
+> java -jar appaloosa-client-1.10 --token er355fgfvc23 /tmp/my_app.apk
 
-> java -jar appaloosa-client-1.3 -t er355fgfvc23 /tmp/my_app.ipa
+> java -jar appaloosa-client-1.10 -t er355fgfvc23 /tmp/my_app.ipa
 
-> java -jar appaloosa-client-1.3 -t er355fgfvc23 /tmp/my_app.ipa /tmp/my_app.apk
+> java -jar appaloosa-client-1.10 -t er355fgfvc23 /tmp/my_app.ipa /tmp/my_app.apk
 
-> java -jar appaloosa-client-1.3 --description 'Brand new version' --groups 'Group 1 | Group 3' -t er355fgfvc23 /tmp/my_app.ipa
+> java -jar appaloosa-client-1.10 --description 'Brand new version' --groups 'Group 1 | Group 3' -t er355fgfvc23 /tmp/my_app.ipa
 
-> java -jar appaloosa-client-1.3 --description 'Brand new version' --groups 'Group 1 | Group 3' -t er355fgfvc23 --changelog 'remove deprecated UISearchDisplayController' /tmp/my_app.ipa
+> java -jar appaloosa-client-1.10 --description 'Brand new version' --groups 'Group 1 | Group 3' -t er355fgfvc23 --changelog 'remove deprecated UISearchDisplayController' /tmp/my_app.ipa
 
 Options                             
 * --proxyHost                             The proxy hostname                     
@@ -50,7 +50,7 @@ Options
 
 Contributing
 ------------
-1. Fork it [WTF?](http://help.github.com/fork-a-repo/)
+1. [Fork it](http://help.github.com/fork-a-repo/)
 2. Add your feature
-3. Send a pull request [WTF?](http://help.github.com/send-pull-requests/)
+3. Send a [pull request](http://help.github.com/send-pull-requests/)
 
