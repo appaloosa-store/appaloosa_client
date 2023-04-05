@@ -157,7 +157,7 @@ public class AppaloosaClient {
 	 * */
 	public void deployFile(String filePath, String description, List<String> groupNames, String changelog)
             throws AppaloosaDeployException {
-        log("== Appaloosa Client V1.10");
+		log("== Appaloosa Client V2.0");
 		log("== Deploy file " + filePath + " to Appaloosa");
 		log("== reseting http connection");
 		resetHttpConnection();
