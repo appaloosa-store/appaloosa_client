@@ -66,12 +66,16 @@ public class AppaloosaClientTest {
 
 	MockHttpServer server;
 
-	private String sampleBinaryFormResponse = "{\"policy\":\"eyJleH=\",\"success_action_status\":200,\"content_type\":\"\",\"signature\":\"LL/ZXXNCl+0NtI8=\",\"url\":"
-			+ "\""
-			+ BASE_URL
-			+ ":"
-			+ PORT
-			+ "/\",\"access_key\":\"eERTYU\",\"key\":\"5/uploads/${filename}\",\"acl\":\"private\"}";
+	private String sampleBinaryFormResponse =
+		"{\"policy\":\"eyJleH=\"," +
+                "\"success_action_status\":200," +
+                "\"Content-Type\":\"\"," +
+                "\"url\": \"" + BASE_URL + ":" + PORT + "/\"," +
+                "\"x-amz-signature\":\"LL/ZXXNCl+0NtI8=\"," +
+                "\"x-amz-credential\":\"JTJYYJ\"," +
+                "\"x-amz-algorithm\":\"AWS4-HMAC-SHA256\"," +
+                "\"x-amz-date\":\"20230404T161626Z\"," +
+                "\"key\":\"5/uploads/${filename}\"}";
 
 	private String sampleOnBinaryUploadResponse = "{\"id\":590,\"activation_date\":null, \"other\":\"test\"}";
 
@@ -97,7 +101,7 @@ public class AppaloosaClientTest {
 			throws AppaloosaDeployException {
 		appaloosaClient.setStoreToken("   " + ORGANISATION_TOKEN + " \t ");
 
-		String url = "/api/upload_binary_form.json?token=" + ORGANISATION_TOKEN;
+		String url = "/api/upload_binary_form_signature_v4.json?token=" + ORGANISATION_TOKEN;
 		server.expect(GET, url)
 				.respondWith(200, null, sampleBinaryFormResponse);
 
@@ -107,7 +111,7 @@ public class AppaloosaClientTest {
 	@Test
 	public void deployShouldUseDescription() throws AppaloosaDeployException {
 		server.expect(GET,
-				"/api/upload_binary_form.json?token=" + ORGANISATION_TOKEN)
+				"/api/upload_binary_form_signature_v4.json?token=" + ORGANISATION_TOKEN)
 				.respondWith(200, null, sampleBinaryFormResponse);
 
 		server.expect(POST, "/").respondWith(200, null, "");
@@ -135,7 +139,7 @@ public class AppaloosaClientTest {
 	@Test
 	public void getUploadFormShouldCallAppaloosaAndReturnsObject()
 			throws AppaloosaDeployException {
-		String url = "/api/upload_binary_form.json?token=" + ORGANISATION_TOKEN;
+		String url = "/api/upload_binary_form_signature_v4.json?token=" + ORGANISATION_TOKEN;
 		server.expect(GET, url)
 				.respondWith(200, null, sampleBinaryFormResponse);
 
@@ -145,17 +149,18 @@ public class AppaloosaClientTest {
 		assertEquals("eyJleH=", uploadForm.getPolicy());
 		assertTrue(200 == uploadForm.getSuccessActionStatus());
 		assertEquals("", uploadForm.getContentType());
-		assertEquals("LL/ZXXNCl+0NtI8=", uploadForm.getSignature());
+		assertEquals("LL/ZXXNCl+0NtI8=", uploadForm.getXAMZSignature());
+		assertEquals("20230404T161626Z", uploadForm.getXAMZDate());
+		assertEquals("JTJYYJ", uploadForm.getXAMZCredentials());
+		assertEquals("AWS4-HMAC-SHA256", uploadForm.getXAMZAlgorithm());
 		assertEquals(BASE_URL + ":" + PORT + "/", uploadForm.getUrl());
-		assertEquals("eERTYU", uploadForm.getAccessKey());
 		assertEquals("5/uploads/${filename}", uploadForm.getKey());
-		assertEquals("private", uploadForm.getAcl());
 	}
 
 	@Test(expected = AppaloosaDeployException.class)
 	public void getUploadFormShouldDisplayErrorFormServer()
 			throws AppaloosaDeployException {
-		String url = "/api/upload_binary_form.json?token=" + ORGANISATION_TOKEN;
+		String url = "/api/upload_binary_form_signature_v4.json?token=" + ORGANISATION_TOKEN;
 		server.expect(GET, url).respondWith(422, null,
 				"{\"errors\":[\"invalid token\"]}");
 
@@ -186,12 +191,13 @@ public class AppaloosaClientTest {
 
 	private UploadBinaryForm createFakeUploadForm() {
 		UploadBinaryForm form = new UploadBinaryForm();
-		form.setAccessKey("poiuytr");
-		form.setAcl("private");
 		form.setContentType("");
 		form.setKey("56/uploads/${filename}");
 		form.setPolicy("asdfghjk");
-		form.setSignature("ssssss");
+		form.setXAMZSignature("ssssss");
+		form.setXAMZDate("efzfeez");
+		form.setXAMZCredentials("tgegre");
+		form.setXAMZAlgorithm("cwcds");
 		form.setSuccessActionStatus(200);
 		form.setUrl(BASE_URL + ":" + PORT);
 		return form;

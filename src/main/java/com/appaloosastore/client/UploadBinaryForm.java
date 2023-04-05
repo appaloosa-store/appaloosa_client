@@ -31,17 +31,21 @@ import org.codehaus.jackson.map.ObjectMapper;
 @JsonIgnoreProperties(ignoreUnknown=true)
 public class UploadBinaryForm {
 	private static ObjectMapper jsonMapper = new ObjectMapper();
-	private String policy;
 	@JsonProperty(value="success_action_status")
 	private Integer successActionStatus;
-	@JsonProperty(value="content_type")
+	@JsonProperty(value="Content-Type")
 	private String contentType;
-	private String signature;
+	@JsonProperty(value="x-amz-date")
+	private String XAMZDate;
+	@JsonProperty(value="x-amz-credential")
+	private String XAMZCredentials;
+	@JsonProperty(value="x-amz-algorithm")
+	private String XAMZAlgorithm;
+	@JsonProperty(value="x-amz-signature")
+	private String XAMZSignature;
 	private String url;
-	@JsonProperty(value="access_key")
-	private String accessKey;
 	private String key;
-	private String acl;
+	private String policy;
 	
 	public static UploadBinaryForm createFormJson(String json) throws AppaloosaDeployException {
 		try {
@@ -76,14 +80,6 @@ public class UploadBinaryForm {
 		this.contentType = contentType;
 	}
 
-	public String getSignature() {
-		return signature;
-	}
-
-	public void setSignature(String signature) {
-		this.signature = signature;
-	}
-
 	public String getUrl() {
 		return url;
 	}
@@ -91,14 +87,6 @@ public class UploadBinaryForm {
 	public void setUrl(String url) {
 		this.url = url;
 		}
-
-	public String getAccessKey() {
-		return accessKey;
-	}
-
-	public void setAccessKey(String accessKey) {
-		this.accessKey = accessKey;
-	}
 
 	public String getKey() {
 		return key;
@@ -108,12 +96,35 @@ public class UploadBinaryForm {
 		this.key = key;
 	}
 
-	public String getAcl() {
-		return acl;
+	public String getXAMZDate() {
+		return XAMZDate;
 	}
 
-	public void setAcl(String acl) {
-		this.acl = acl;
+	public void setXAMZDate(String XAMZDate) {
+		this.XAMZDate = XAMZDate;
 	}
 
+	public String getXAMZCredentials() {
+		return XAMZCredentials;
+	}
+
+	public void setXAMZCredentials(String XAMZCredentials) {
+		this.XAMZCredentials = XAMZCredentials;
+	}
+
+	public String getXAMZAlgorithm() {
+		return XAMZAlgorithm;
+	}
+
+	public void setXAMZAlgorithm(String XAMZAlgorithm) {
+		this.XAMZAlgorithm = XAMZAlgorithm;
+	}
+
+	public String getXAMZSignature() {
+		return XAMZSignature;
+	}
+
+	public void setXAMZSignature(String XAMZSignature) {
+		this.XAMZSignature = XAMZSignature;
+	}
 }
