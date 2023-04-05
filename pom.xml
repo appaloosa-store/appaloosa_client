@@ -148,6 +148,14 @@
                     <autoReleaseAfterClose>true</autoReleaseAfterClose>
                 </configuration>
             </plugin>
+			<plugin>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<argLine>
+						--add-opens java.base/java.lang=ALL-UNNAMED
+					</argLine>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
     <distributionManagement>
