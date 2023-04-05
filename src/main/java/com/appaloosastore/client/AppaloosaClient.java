@@ -157,7 +157,7 @@ public class AppaloosaClient {
 	 * */
 	public void deployFile(String filePath, String description, List<String> groupNames, String changelog)
             throws AppaloosaDeployException {
-        log("== Appaloosa Client V1.10");
+		log("== Appaloosa Client V2.0");
 		log("== Deploy file " + filePath + " to Appaloosa");
 		log("== reseting http connection");
 		resetHttpConnection();
@@ -166,7 +166,7 @@ public class AppaloosaClient {
 		log("==   Ask for upload information");
 		UploadBinaryForm uploadForm = getUploadForm();
 
-		// Upload the file on Amazon
+		// Upload the file on cloud provider
 		log("==   Upload file " + filePath);
 		uploadFile(filePath, uploadForm);
 
@@ -356,6 +356,7 @@ public class AppaloosaClient {
 		parameters.add(new BasicNameValuePair("token", storeToken));
 		String key = constructKey(uploadForm.getKey(), filePath);
 		parameters.add(new BasicNameValuePair("key", key));
+		parameters.add(new BasicNameValuePair("prefix", uploadForm.getPrefix()));
 
 		try {
 			return makePublishCall(httpPost, parameters);
@@ -407,11 +408,12 @@ public class AppaloosaClient {
 
 		addParam(entity, "success_action_status", uploadForm
 				.getSuccessActionStatus().toString());
-		addParam(entity, "Content-Type", uploadForm.getContentType());
-		addParam(entity, "signature", uploadForm.getSignature());
-		addParam(entity, "AWSAccessKeyId", uploadForm.getAccessKey());
 		addParam(entity, "key", uploadForm.getKey());
-		addParam(entity, "acl", uploadForm.getAcl());
+		addParam(entity, "Content-Type", uploadForm.getContentType());
+		addParam(entity, "X-Amz-Signature", uploadForm.getXAMZSignature());
+		addParam(entity, "X-Amz-Credential", uploadForm.getXAMZCredentials());
+		addParam(entity, "X-Amz-Date", uploadForm.getXAMZDate());
+		addParam(entity, "X-Amz-Algorithm", uploadForm.getXAMZAlgorithm());
 
 		entity.addPart("file", cbFile);
 
@@ -488,7 +490,7 @@ public class AppaloosaClient {
 
 	protected String newBinaryUrl() {
 		String url = getAppaloosaBaseUrl();
-		url = url + "api/upload_binary_form.json?token=" + storeToken;
+		url = url + "api/upload_binary_form_signature_v4.json?token=" + storeToken;
 		return url;
 	}
 
