@@ -43,6 +43,7 @@ public class UploadBinaryForm {
 	private String XAMZAlgorithm;
 	@JsonProperty(value="x-amz-signature")
 	private String XAMZSignature;
+	private String prefix;
 	private String url;
 	private String key;
 	private String policy;
@@ -126,5 +127,9 @@ public class UploadBinaryForm {
 
 	public void setXAMZSignature(String XAMZSignature) {
 		this.XAMZSignature = XAMZSignature;
+	}
+
+	public String getPrefix() {
+		return prefix;
 	}
 }

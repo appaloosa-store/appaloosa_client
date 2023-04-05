@@ -166,7 +166,7 @@ public class AppaloosaClient {
 		log("==   Ask for upload information");
 		UploadBinaryForm uploadForm = getUploadForm();
 
-		// Upload the file on Amazon
+		// Upload the file on cloud provider
 		log("==   Upload file " + filePath);
 		uploadFile(filePath, uploadForm);
 
@@ -356,6 +356,7 @@ public class AppaloosaClient {
 		parameters.add(new BasicNameValuePair("token", storeToken));
 		String key = constructKey(uploadForm.getKey(), filePath);
 		parameters.add(new BasicNameValuePair("key", key));
+		parameters.add(new BasicNameValuePair("prefix", uploadForm.getPrefix()));
 
 		try {
 			return makePublishCall(httpPost, parameters);

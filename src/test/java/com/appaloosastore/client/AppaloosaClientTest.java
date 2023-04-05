@@ -68,14 +68,15 @@ public class AppaloosaClientTest {
 
 	private String sampleBinaryFormResponse =
 		"{\"policy\":\"eyJleH=\"," +
-                "\"success_action_status\":200," +
-                "\"Content-Type\":\"\"," +
-                "\"url\": \"" + BASE_URL + ":" + PORT + "/\"," +
-                "\"x-amz-signature\":\"LL/ZXXNCl+0NtI8=\"," +
-                "\"x-amz-credential\":\"JTJYYJ\"," +
-                "\"x-amz-algorithm\":\"AWS4-HMAC-SHA256\"," +
-                "\"x-amz-date\":\"20230404T161626Z\"," +
-                "\"key\":\"5/uploads/${filename}\"}";
+			"\"success_action_status\":200," +
+			"\"Content-Type\":\"\"," +
+			"\"url\": \"" + BASE_URL + ":" + PORT + "/\"," +
+			"\"x-amz-signature\":\"LL/ZXXNCl+0NtI8=\"," +
+			"\"x-amz-credential\":\"JTJYYJ\"," +
+			"\"x-amz-algorithm\":\"AWS4-HMAC-SHA256\"," +
+			"\"x-amz-date\":\"20230404T161626Z\"," +
+			"\"prefix\":\"5/uploads\"," +
+			"\"key\":\"5/uploads/${filename}\"}";
 
 	private String sampleOnBinaryUploadResponse = "{\"id\":590,\"activation_date\":null, \"other\":\"test\"}";
 
@@ -155,6 +156,7 @@ public class AppaloosaClientTest {
 		assertEquals("AWS4-HMAC-SHA256", uploadForm.getXAMZAlgorithm());
 		assertEquals(BASE_URL + ":" + PORT + "/", uploadForm.getUrl());
 		assertEquals("5/uploads/${filename}", uploadForm.getKey());
+		assertEquals("5/uploads", uploadForm.getPrefix());
 	}
 
 	@Test(expected = AppaloosaDeployException.class)
